@@ -117,12 +117,11 @@ const ProcessDetailForm: React.FC<{
 
 const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
   data,
-  errors,
   isExpanded,
   onToggle,
   onChange,
 }) => {
-  const handleSectionChange = (section: keyof InProcessDetails, sectionData: any) => {
+  const handleSectionChange = (section: keyof InProcessDetails, sectionData: unknown) => {
     onChange({ [section]: sectionData });
   };
 
