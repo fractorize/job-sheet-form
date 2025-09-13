@@ -6,4 +6,9 @@ body {
     "Helvetica Neue", Arial, sans-serif;
   background-color: #f8fafc;
   color: #1e293b;
+  background-image: url("/bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
 }
