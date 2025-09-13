@@ -1,10 +1,16 @@
-import JobSheetForm from "./JobSheetForm";
+
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import JobSheetForm from "./pages/JobSheetForm";
 
 const App = () => {
   return (
-    <div>
-      <JobSheetForm />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<div />} />
+        <Route path="/create" element={<JobSheetForm />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

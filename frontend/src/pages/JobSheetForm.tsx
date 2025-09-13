@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import type { JobSheetFormData, FormErrors } from "./types";
-import OrderDetailsSection from "./components/OrderDetailsSection";
-import JobDetailsSection from "./components/JobDetailsSection";
-import InProcessDetailsSection from "./components/InProcessDetailsSection";
-import RemarksSection from "./components/RemarksSection";
-import FooterSection from "./components/FooterSection";
+import type { JobSheetFormData, FormErrors } from "../types";
+import OrderDetailsSection from "../components/OrderDetailsSection";
+import JobDetailsSection from "../components/JobDetailsSection";
+import InProcessDetailsSection from "../components/InProcessDetailsSection";
+import RemarksSection from "../components/RemarksSection";
+import FooterSection from "../components/FooterSection";
 
 const JobSheetForm: React.FC = () => {
   const [formData, setFormData] = useState<JobSheetFormData>({
