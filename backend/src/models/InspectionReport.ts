@@ -43,8 +43,8 @@ const SkivingDetailsSchema = new Schema(
   { _id: false }
 );
 
-// Main JobSheet schema
-const JobSheetSchema = new Schema(
+// Main InspectionReport schema
+const InspectionReportSchema = new Schema(
   {
     orderDetails: {
       customer: {
@@ -189,13 +189,8 @@ const JobSheetSchema = new Schema(
   }
 );
 
-// Custom validation for MOC array - at least one must be selected
-JobSheetSchema.path("jobDetails.moc").validate(function (value: string[]) {
-  return value && value.length > 0;
-}, "At least one MOC must be selected");
-
 // Create and export the model
-const JobSheet = mongoose.model<
+const InspectionReport = mongoose.model<
   Document & {
     orderDetails: {
       customer: string;
@@ -247,6 +242,6 @@ const JobSheet = mongoose.model<
     createdAt: Date;
     updatedAt: Date;
   }
->("JobSheet", JobSheetSchema);
+>("InspectionReport", InspectionReportSchema);
 
-export default JobSheet;
+export default InspectionReport;

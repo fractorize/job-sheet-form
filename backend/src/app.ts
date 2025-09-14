@@ -8,6 +8,7 @@ dotenv.config();
 
 //Utils
 import { connectDB } from "./config/db.js";
+import inspectionReportRoutes from "./routes/inspectionReportRoutes.js";
 
 connectDB();
 
@@ -17,6 +18,7 @@ console.log(port);
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use("/api/inspection-report", inspectionReportRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
