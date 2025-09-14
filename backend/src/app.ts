@@ -18,8 +18,8 @@ console.log(port);
 
 // Middleware to parse JSON
 app.use(express.json());
-app.use("/api/inspection-report", inspectionReportRoutes);
 
+app.use("/api/inspection-report", inspectionReportRoutes);
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
 });

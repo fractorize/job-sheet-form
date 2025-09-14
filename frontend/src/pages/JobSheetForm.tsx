@@ -167,7 +167,15 @@ const JobSheetForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen  py-8">
+    <div
+      className="min-h-screen py-8"
+      style={{
+        backgroundImage: 'url("/bg.png")',
+        backgroundAttachment: 'fixed',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="bg-blue-600 text-white px-6 py-4">

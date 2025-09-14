@@ -1,5 +1,8 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { IInspectionReport } from "./types/inspectionReport.js";
 
+// Type alias for the document (includes Mongoose Document methods)
+type InspectionReportDoc = IInspectionReport;
 // ProcessDetail sub-schema for in-process details
 const ProcessDetailSchema = new Schema(
   {
@@ -44,7 +47,7 @@ const SkivingDetailsSchema = new Schema(
 );
 
 // Main InspectionReport schema
-const InspectionReportSchema = new Schema(
+const InspectionReportSchema = new Schema<IInspectionReport>(
   {
     orderDetails: {
       customer: {
@@ -190,58 +193,8 @@ const InspectionReportSchema = new Schema(
 );
 
 // Create and export the model
-const InspectionReport = mongoose.model<
-  Document & {
-    orderDetails: {
-      customer: string;
-      flxTagNo: string;
-      customerTagNo?: string;
-      deliveryDueDate: string;
-      reference?: string;
-    };
-    jobDetails: {
-      hoseType: string;
-      hoseId: string;
-      lengthCut: {
-        value?: number;
-        unit: string;
-      };
-      quantity: number;
-      fittingType: {
-        endA: string;
-        endB: string;
-      };
-      moc: string[];
-      traceability: {
-        hoseBatchNumber: string;
-        flexifloBatchNo?: string;
-      };
-    };
-    inProcessDetails: {
-      hoseCutDetails: any;
-      skivingDetails: {
-        internal: any;
-        external: any;
-      };
-      assemblyDetails: any;
-      mandralsDetails: any;
-      crimpingDetails: any;
-      weldingDetails: any;
-      punchingTaggingDetails: any;
-    };
-    remarks: {
-      text?: string;
-      weldingRodNumber?: string;
-      weldingRodSize?: string;
-      piggingOptions: string[];
-    };
-    footer: {
-      supervisorSignature: string;
-      date: string;
-    };
-    createdAt: Date;
-    updatedAt: Date;
-  }
->("InspectionReport", InspectionReportSchema);
-
+const InspectionReport = mongoose.model<InspectionReportDoc>(
+  "InspectionReport",
+  InspectionReportSchema
+);
 export default InspectionReport;
