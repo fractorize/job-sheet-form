@@ -1,6 +1,6 @@
 import React from "react";
 import type { JobDetails, FormErrors } from "../types";
-import CollapsibleSection from "./CollapsibleSection";
+import CollapsibleSection from "../common/CollapsibleSection";
 
 interface JobDetailsSectionProps {
   data: JobDetails;

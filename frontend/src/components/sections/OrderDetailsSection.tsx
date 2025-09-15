@@ -1,6 +1,6 @@
 import React from "react";
 import type { OrderDetails, FormErrors } from "../types";
-import CollapsibleSection from "./CollapsibleSection";
+import CollapsibleSection from "../common/CollapsibleSection";
 
 interface OrderDetailsSectionProps {
   data: OrderDetails;

@@ -1,17 +1,19 @@
 import React from "react";
 import { useFormStore } from "../store/useStore";
-import OrderDetailsSection from "../components/OrderDetailsSection";
-import JobDetailsSection from "../components/JobDetailsSection";
-import InProcessDetailsSection from "../components/InProcessDetailsSection";
-import RemarksSection from "../components/RemarksSection";
-import FooterSection from "../components/FooterSection";
+import AddJobBtn from "../components/button/AddJobBtn";
+import OrderDetailsSection from "../components/sections/OrderDetailsSection";
+import JobDetailsSection from "../components/sections/JobDetailsSection";
+import InProcessDetailsSection from "../components/sections/InProcessDetailsSection";
+import RemarksSection from "../components/sections/RemarksSection";
+import FooterSection from "../components/sections/FooterSection";
+import { useNavigate } from "react-router-dom";
 
 const JobSheetForm: React.FC = () => {
   const {
     formData,
     errors,
     successMessage,
-    isSubmitting,
+
     expandedSections,
     updateFormData,
     toggleSection,
@@ -22,6 +24,7 @@ const JobSheetForm: React.FC = () => {
     e.preventDefault();
     await createReport();
   };
+  const navigate = useNavigate();
 
   return (
     <div
@@ -44,7 +47,13 @@ const JobSheetForm: React.FC = () => {
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {successMessage && (
               <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
-                {successMessage}
+                {successMessage}{" "}
+                <span
+                  className="text-green-800 cursor-pointer underline"
+                  onClick={() => navigate("/")}
+                >
+                  Go to Home
+                </span>
               </div>
             )}
             <OrderDetailsSection
@@ -87,15 +96,7 @@ const JobSheetForm: React.FC = () => {
               onChange={(data) => updateFormData("footer", data)}
             />
 
-            <div className="flex justify-center pt-6 border-t">
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 shadow-md hover:shadow-lg disabled:opacity-60"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Saving..." : "Save"}
-              </button>
-            </div>
+            <AddJobBtn />
           </form>
         </div>
       </div>

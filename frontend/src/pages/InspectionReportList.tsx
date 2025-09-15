@@ -1,17 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useFormStore } from "../store/useStore";
+import { useNavigate } from "react-router-dom";
+import { TiUserAdd } from "react-icons/ti";
 
-export interface InspectionReport {
-  customerName: string;
-  flxTagNo: string;
-}
+const InspectionReportList: React.FC = () => {
+  const { jobs, jobsLoading, jobsError, fetchJobs } = useFormStore();
+  const navigate = useNavigate();
 
-interface InspectionReportListProps {
-  reports: InspectionReport[];
-}
-
-const InspectionReportList: React.FC<InspectionReportListProps> = ({
-  reports,
-}) => {
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,29 +19,41 @@ const InspectionReportList: React.FC<InspectionReportListProps> = ({
               Inspection Report List
             </h1>
           </div>
+
           <div className="p-6">
-            {reports.length === 0 ? (
+            {jobsLoading ? (
+              <div className="text-center text-gray-500 py-8">Loading...</div>
+            ) : jobsError ? (
+              <div className="text-center text-red-600 py-8">{jobsError}</div>
+            ) : jobs.length === 0 ? (
               <div className="text-center text-gray-500 py-8">
                 No reports found.
               </div>
             ) : (
               <ul className="divide-y divide-gray-200">
-                {reports.map((report, idx) => (
+                {jobs.map((job) => (
                   <li
-                    key={idx}
+                    key={job._id}
                     className="py-4 flex justify-between items-center"
                   >
                     <span className="font-medium text-gray-800">
-                      {report.customerName}
+                      {job.orderDetails?.customer}
                     </span>
                     <span className="text-gray-500">
-                      FLX Tag No: {report.flxTagNo}
+                      FLX Tag No: {job.orderDetails?.flxTagNo}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
+
+          <button
+            className="fixed bottom-5 right-5 bg-blue-600 p-3 cursor-pointer rounded-full z-50 transition-transform duration-300"
+            onClick={() => navigate("/create-job")}
+          >
+            <TiUserAdd color="white" size={20} />
+          </button>
         </div>
       </div>
     </div>

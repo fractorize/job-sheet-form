@@ -1,6 +1,6 @@
 import React from "react";
 import type { Footer, FormErrors } from "../types";
-import CollapsibleSection from "./CollapsibleSection";
+import CollapsibleSection from "../common/CollapsibleSection";
 
 interface FooterSectionProps {
   data: Footer;

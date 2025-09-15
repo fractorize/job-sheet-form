@@ -5,12 +5,25 @@ import type { JobSheetFormData, FormErrors } from "../types";
 import { inspectionReportSchema } from "../validations/inspectionReportSchema";
 import { ZodError } from "zod";
 
+type JobListItem = {
+  _id: string;
+  orderDetails: {
+    customer: string;
+    flxTagNo: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 type FormStore = {
   formData: JobSheetFormData;
   errors: FormErrors;
   isSubmitting: boolean;
   successMessage: string;
   expandedSections: Set<string>;
+  jobs: JobListItem[];
+  jobsLoading: boolean;
+  jobsError: string;
   updateFormData: <K extends keyof JobSheetFormData>(
     section: K,
     data: Partial<JobSheetFormData[K]>
@@ -23,6 +36,7 @@ type FormStore = {
     data: JobSheetFormData
   ) => { ok: true } | { ok: false; errors: FormErrors };
   createReport: () => Promise<void>;
+  fetchJobs: () => Promise<void>;
 };
 
 const initialFormData: JobSheetFormData = {
@@ -157,6 +171,9 @@ export const useFormStore = create<FormStore>((set, get) => ({
   isSubmitting: false,
   successMessage: "",
   expandedSections: new Set<string>(["orderDetails"]),
+  jobs: [],
+  jobsLoading: false,
+  jobsError: "",
 
   updateFormData: (section, data) => {
     set((state) => {
@@ -248,6 +265,24 @@ export const useFormStore = create<FormStore>((set, get) => ({
       }
     } finally {
       set({ isSubmitting: false });
+    }
+  },
+
+  fetchJobs: async () => {
+    try {
+      set({ jobsLoading: true, jobsError: "" });
+      const response = await axios.get("/api/inspection-report");
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.data ?? [];
+      set({ jobs: data });
+    } catch (error: unknown) {
+      const err = error as AxiosError<{ message?: string }>;
+      set({
+        jobsError: err.response?.data?.message || "Failed to fetch jobs.",
+      });
+    } finally {
+      set({ jobsLoading: false });
     }
   },
 }));

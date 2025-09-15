@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { Request, Response } from "express";
 
 // Configure dotenv
-dotenv.config();
+dotenv.config({ path: "../../../.env" });
 
 //Utils
 import { connectDB } from "./config/db.js";

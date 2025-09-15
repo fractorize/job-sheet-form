@@ -1,6 +1,6 @@
-import React from 'react';
-import type { Remarks, FormErrors } from '../types';
-import CollapsibleSection from './CollapsibleSection';
+import React from "react";
+import type { Remarks, FormErrors } from "../types";
+import CollapsibleSection from "../common/CollapsibleSection";
 
 interface RemarksSectionProps {
   data: Remarks;
@@ -24,17 +24,17 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
   const handlePiggingOptionChange = (option: string, checked: boolean) => {
     const newOptions = checked
       ? [...data.piggingOptions, option]
-      : data.piggingOptions.filter(item => item !== option);
+      : data.piggingOptions.filter((item) => item !== option);
     onChange({ piggingOptions: newOptions });
   };
 
   const piggingOptions = [
-    'Before Assembly',
-    'After Assembly',
-    'Before Testing',
-    'After Testing',
-    'Final Inspection',
-    'Packaging',
+    "Before Assembly",
+    "After Assembly",
+    "Before Testing",
+    "After Testing",
+    "Final Inspection",
+    "Packaging",
   ];
 
   return (
@@ -50,7 +50,7 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
           </label>
           <textarea
             value={data.text}
-            onChange={(e) => handleInputChange('text', e.target.value)}
+            onChange={(e) => handleInputChange("text", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={4}
             placeholder="Enter any general remarks, observations, or notes about the process..."
@@ -64,8 +64,10 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
             </label>
             <input
               type="text"
-              value={data.weldingRodNumber || ''}
-              onChange={(e) => handleInputChange('weldingRodNumber', e.target.value)}
+              value={data.weldingRodNumber || ""}
+              onChange={(e) =>
+                handleInputChange("weldingRodNumber", e.target.value)
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter welding rod number"
             />
@@ -77,8 +79,10 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
             </label>
             <input
               type="text"
-              value={data.weldingRodSize || ''}
-              onChange={(e) => handleInputChange('weldingRodSize', e.target.value)}
+              value={data.weldingRodSize || ""}
+              onChange={(e) =>
+                handleInputChange("weldingRodSize", e.target.value)
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter welding rod size"
             />
@@ -86,17 +90,23 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-md font-semibold text-gray-800">Pigging Options</h3>
+          <h3 className="text-md font-semibold text-gray-800">
+            Pigging Options
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {piggingOptions.map(option => (
+            {piggingOptions.map((option) => (
               <label key={option} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={data.piggingOptions.includes(option)}
-                  onChange={(e) => handlePiggingOptionChange(option, e.target.checked)}
+                  onChange={(e) =>
+                    handlePiggingOptionChange(option, e.target.checked)
+                  }
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-sm font-medium text-gray-700">{option}</span>
+                <span className="text-sm font-medium text-gray-700">
+                  {option}
+                </span>
               </label>
             ))}
           </div>
