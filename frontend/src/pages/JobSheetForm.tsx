@@ -171,9 +171,9 @@ const JobSheetForm: React.FC = () => {
       className="min-h-screen py-8"
       style={{
         backgroundImage: 'url("/bg.png")',
-        backgroundAttachment: 'fixed',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundAttachment: "fixed",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -230,7 +230,7 @@ const JobSheetForm: React.FC = () => {
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 shadow-md hover:shadow-lg"
               >
-                Submit Report
+                Save
               </button>
             </div>
           </form>

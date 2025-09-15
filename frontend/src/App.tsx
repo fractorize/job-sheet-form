@@ -13,7 +13,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<InspectionReportList reports={reports} />} />
-      <Route path="/create-user" element={<JobSheetForm />} />
+      <Route path="/create-job" element={<JobSheetForm />} />
     </Routes>
   );
 };

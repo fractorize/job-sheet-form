@@ -1,30 +1,14 @@
 import InspectionReport from "../models/InspectionReport.js";
 import { Request, Response } from "express";
+import { inspectionReportSchema } from "../validations/inspectionReportSchema.js";
+import { ZodError } from "zod";
 
 export const createReport = async (req: Request, res: Response) => {
   try {
-    // Validate request body
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Request body is required",
-      });
-    }
-
-    const inspectionReport = req.body;
-    const newInspectionReport = new InspectionReport(inspectionReport);
-
-    // Validate the document before saving
-    const validationError = newInspectionReport.validateSync();
-    if (validationError) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation Error",
-        errors: validationError.errors,
-      });
-    }
-
+    const parsed = inspectionReportSchema.parse(req.body);
+    const newInspectionReport = new InspectionReport(parsed);
     await newInspectionReport.save();
+
     res.status(201).json({
       success: true,
       message: "Report successfully added.",
@@ -33,6 +17,16 @@ export const createReport = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error in create Report :", (error as Error).message);
 
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation Error",
+        errors: error.issues.map((e) => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
+      });
+    }
     // Handle specific MongoDB errors
     if ((error as any).name === "ValidationError") {
       return res.status(400).json({
