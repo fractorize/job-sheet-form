@@ -6,6 +6,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.env
+# Ignore env files everywhere and their variants
+**/.env
+.env.*
+**/.env.*
 
 node_modules
 dist
