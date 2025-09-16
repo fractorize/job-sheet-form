@@ -91,16 +91,3 @@ export const getJobById = async (req: Request, res: Response) => {
     });
   }
 };
-
-export const updateJob = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    // const updateJob = await
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error instanceof Error ? error.message : String(error),
-    });
-  }
-};
