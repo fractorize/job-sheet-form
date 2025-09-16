@@ -1,8 +1,8 @@
 import mongoose, { Schema } from "mongoose";
-import { IInspectionReport } from "./types/inspectionReport.js";
+import { IJob } from "./types/job.js";
 
 // Type alias for the document (includes Mongoose Document methods)
-type InspectionReportDoc = IInspectionReport;
+type JobDoc = IJob;
 // ProcessDetail sub-schema for in-process details
 const ProcessDetailSchema = new Schema(
   {
@@ -46,8 +46,8 @@ const SkivingDetailsSchema = new Schema(
   { _id: false }
 );
 
-// Main InspectionReport schema
-const InspectionReportSchema = new Schema<IInspectionReport>(
+// Main Job schema
+const JobSchema = new Schema<IJob>(
   {
     orderDetails: {
       customer: {
@@ -193,8 +193,5 @@ const InspectionReportSchema = new Schema<IInspectionReport>(
 );
 
 // Create and export the model
-const InspectionReport = mongoose.model<InspectionReportDoc>(
-  "InspectionReport",
-  InspectionReportSchema
-);
-export default InspectionReport;
+const Job = mongoose.model<JobDoc>("Job", JobSchema);
+export default Job;

@@ -1,9 +1,7 @@
-import { length, z } from "zod";
+import { z } from "zod";
 
-// Reusable unit enum
 const unitEnum = z.enum(["mm", "cm", "m", "ft", "in"]);
 
-// Sub-schema: ProcessDetail
 const processDetailSchema = z.object({
   date: z.string().optional(),
   operatorSign: z.string().optional(),
@@ -17,14 +15,12 @@ const processDetailSchema = z.object({
   additionalNotes: z.string().optional(),
 });
 
-// Sub-schema: SkivingDetails
 const skivingDetailsSchema = z.object({
   internal: processDetailSchema.optional(),
   external: processDetailSchema.optional(),
 });
 
-// Main schema
-export const inspectionReportSchema = z.object({
+export const jobSchema = z.object({
   orderDetails: z.object({
     customer: z.string().min(1, "Customer name is required"),
     flxTagNo: z.string().min(1, "FLX Tag No is required"),
@@ -96,4 +92,4 @@ export const inspectionReportSchema = z.object({
   }),
 });
 
-export type InspectionReportInput = z.infer<typeof inspectionReportSchema>;
+export type JobInput = z.infer<typeof JobSchema>;

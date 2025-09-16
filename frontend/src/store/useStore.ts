@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import axios, { AxiosError } from "axios";
 import type { JobSheetFormData, FormErrors } from "../types";
-import { inspectionReportSchema } from "../validations/inspectionReportSchema";
+import { jobSchema } from "../validations/jobSchema";
 import { ZodError } from "zod";
 
 type JobListItem = {
@@ -35,8 +35,17 @@ type FormStore = {
   validateWithZod: (
     data: JobSheetFormData
   ) => { ok: true } | { ok: false; errors: FormErrors };
-  createReport: () => Promise<void>;
+  createJob: () => Promise<void>;
   fetchJobs: () => Promise<void>;
+  // Added single job fetch and state
+  jobDetail?: JobSheetFormData & {
+    _id?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+  jobDetailLoading: boolean;
+  jobDetailError: string;
+  fetchJobById: (id: string) => Promise<void>;
 };
 
 const initialFormData: JobSheetFormData = {
@@ -174,6 +183,10 @@ export const useFormStore = create<FormStore>((set, get) => ({
   jobs: [],
   jobsLoading: false,
   jobsError: "",
+  // Added initial state for job detail
+  jobDetail: undefined,
+  jobDetailLoading: false,
+  jobDetailError: "",
 
   updateFormData: (section, data) => {
     set((state) => {
@@ -207,7 +220,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
 
   validateWithZod: (data) => {
     try {
-      inspectionReportSchema.parse(data);
+      JobSchema.parse(data);
       return { ok: true } as const;
     } catch (err) {
       const newErrors: FormErrors = {};
@@ -221,7 +234,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
     }
   },
 
-  createReport: async () => {
+  createJob: async () => {
     const { formData, validateWithZod } = get();
     set({ successMessage: "", errors: {} });
     const validation = validateWithZod(formData);
@@ -283,6 +296,24 @@ export const useFormStore = create<FormStore>((set, get) => ({
       });
     } finally {
       set({ jobsLoading: false });
+    }
+  },
+
+  // Implement single job fetch
+  fetchJobById: async (id: string) => {
+    try {
+      set({ jobDetailLoading: true, jobDetailError: "" });
+      const response = await axios.get(`/api/inspection-report/${id}`);
+      const data = response.data?.data ?? response.data;
+      set({ jobDetail: data });
+    } catch (error: unknown) {
+      const err = error as AxiosError<{ message?: string }>;
+      set({
+        jobDetailError:
+          err.response?.data?.message || "Failed to fetch report.",
+      });
+    } finally {
+      set({ jobDetailLoading: false });
     }
   },
 }));

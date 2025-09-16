@@ -17,12 +17,12 @@ const JobSheetForm: React.FC = () => {
     expandedSections,
     updateFormData,
     toggleSection,
-    createReport,
+    createJob,
   } = useFormStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createReport();
+    await createJob();
   };
   const navigate = useNavigate();
 

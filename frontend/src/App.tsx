@@ -1,12 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import JobSheetForm from "./pages/JobSheetForm";
-import InspectionReportList from "./pages/InspectionReportList";
+import JobList from "./pages/JobList";
+import JobDetail from "./pages/JobDetail";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<InspectionReportList />} />
+      <Route path="/" element={<JobList />} />
       <Route path="/create-job" element={<JobSheetForm />} />
+      <Route path="/report/:id" element={<JobDetail />} />
     </Routes>
   );
 };

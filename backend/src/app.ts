@@ -4,11 +4,11 @@ import dotenv from "dotenv";
 import { Request, Response } from "express";
 
 // Configure dotenv
-dotenv.config({ path: "../../../.env" });
+dotenv.config();
 
 //Utils
 import { connectDB } from "./config/db.js";
-import inspectionReportRoutes from "./routes/inspectionReportRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
 
 connectDB();
 
@@ -19,7 +19,7 @@ console.log(port);
 // Middleware to parse JSON
 app.use(express.json());
 
-app.use("/api/inspection-report", inspectionReportRoutes);
+app.use("/api/inspection-report", jobRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

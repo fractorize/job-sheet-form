@@ -3,7 +3,7 @@ import { useFormStore } from "../store/useStore";
 import { useNavigate } from "react-router-dom";
 import { TiUserAdd } from "react-icons/ti";
 
-const InspectionReportList: React.FC = () => {
+const JobList: React.FC = () => {
   const { jobs, jobsLoading, jobsError, fetchJobs } = useFormStore();
   const navigate = useNavigate();
 
@@ -34,7 +34,8 @@ const InspectionReportList: React.FC = () => {
                 {jobs.map((job) => (
                   <li
                     key={job._id}
-                    className="py-4 flex justify-between items-center"
+                    className="py-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 px-2 rounded"
+                    onClick={() => navigate(`/report/${job._id}`)}
                   >
                     <span className="font-medium text-gray-800">
                       {job.orderDetails?.customer}
@@ -60,4 +61,4 @@ const InspectionReportList: React.FC = () => {
   );
 };
 
-export default InspectionReportList;
+export default JobList;

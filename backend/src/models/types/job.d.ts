@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
 // Define the Mongoose document interface
-export interface IInspectionReport extends Document {
+export interface IJob extends Document {
   orderDetails: {
     customer: string;
     flxTagNo: string;

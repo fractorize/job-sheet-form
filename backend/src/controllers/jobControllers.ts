@@ -1,18 +1,18 @@
-import InspectionReport from "../models/InspectionReport.js";
+import Job from "../models/Job.js";
 import { Request, Response } from "express";
-import { inspectionReportSchema } from "../validations/inspectionReportSchema.js";
+import { jobSchema } from "../validations/jobSchema.js";
 import { ZodError } from "zod";
 
-export const createReport = async (req: Request, res: Response) => {
+export const createJob = async (req: Request, res: Response) => {
   try {
-    const parsed = inspectionReportSchema.parse(req.body);
-    const newInspectionReport = new InspectionReport(parsed);
-    await newInspectionReport.save();
+    const parsed = jobSchema.parse(req.body);
+    const newJob = new Job(parsed);
+    await newJob.save();
 
     res.status(201).json({
       success: true,
       message: "Report successfully added.",
-      data: newInspectionReport,
+      data: newJob,
     });
   } catch (error) {
     console.error("Error in create Report :", (error as Error).message);
@@ -27,6 +27,7 @@ export const createReport = async (req: Request, res: Response) => {
         })),
       });
     }
+
     // Handle specific MongoDB errors
     if ((error as any).name === "ValidationError") {
       return res.status(400).json({
@@ -50,9 +51,9 @@ export const createReport = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllReports = async (req: Request, res: Response) => {
+export const getAllJobs = async (req: Request, res: Response) => {
   try {
-    const reports = await InspectionReport.find({});
+    const reports = await Job.find({});
     res.status(200).json({
       success: true,
       data: reports,
@@ -62,6 +63,44 @@ export const getAllReports = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Server Error",
+    });
+  }
+};
+
+export const getJobById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const report = await Job.findById(id);
+
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Report not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: report,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
+
+export const updateJob = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    // const updateJob = await
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error instanceof Error ? error.message : String(error),
     });
   }
 };
