@@ -22,9 +22,10 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
   };
 
   const handlePiggingOptionChange = (option: string, checked: boolean) => {
+    const currentOptions = data.piggingOptions || [];
     const newOptions = checked
-      ? [...data.piggingOptions, option]
-      : data.piggingOptions.filter((item) => item !== option);
+      ? [...currentOptions, option]
+      : currentOptions.filter((item) => item !== option);
     onChange({ piggingOptions: newOptions });
   };
 
@@ -98,7 +99,7 @@ const RemarksSection: React.FC<RemarksSectionProps> = ({
               <label key={option} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  checked={data.piggingOptions.includes(option)}
+                  checked={data.piggingOptions?.includes(option) || false}
                   onChange={(e) =>
                     handlePiggingOptionChange(option, e.target.checked)
                   }

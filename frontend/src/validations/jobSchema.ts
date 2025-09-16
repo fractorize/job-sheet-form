@@ -92,4 +92,4 @@ export const jobSchema = z.object({
   }),
 });
 
-export type JobInput = z.infer<typeof JobSchema>;
+export type JobInput = z.infer<typeof jobSchema>;

@@ -1,7 +1,6 @@
 // packages
 import express from "express";
 import dotenv from "dotenv";
-import { Request, Response } from "express";
 
 // Configure dotenv
 dotenv.config();
@@ -19,7 +18,7 @@ console.log(port);
 // Middleware to parse JSON
 app.use(express.json());
 
-app.use("/api/inspection-report", jobRoutes);
+app.use("/api/job", jobRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

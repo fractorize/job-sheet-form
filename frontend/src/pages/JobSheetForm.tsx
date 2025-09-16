@@ -38,10 +38,16 @@ const JobSheetForm: React.FC = () => {
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="bg-blue-600 text-white px-6 py-4">
-            <h1 className="text-2xl font-bold text-center">
+          <div className="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-center flex-1">
               Job Sheet cum In-Process Inspection Report
             </h1>
+            <button
+              className="bg-white text-blue-600 px-3 py-1 rounded-md text-sm hover:bg-gray-100 cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              Go to Home
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">

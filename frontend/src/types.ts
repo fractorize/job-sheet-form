@@ -26,34 +26,34 @@ export interface JobDetails {
 }
 
 export interface ProcessDetail {
-  date: string;
-  operatorSign: string;
-  machineNumber: string;
+  date?: string;
+  operatorSign?: string;
+  machineNumber?: string;
   measurements?: {
-    value: number;
-    unit: string;
+    value?: number;
+    unit?: string;
   };
   additionalNotes?: string;
 }
 
 export interface InProcessDetails {
-  hoseCutDetails: ProcessDetail;
-  skivingDetails: {
-    internal: ProcessDetail;
-    external: ProcessDetail;
+  hoseCutDetails?: ProcessDetail;
+  skivingDetails?: {
+    internal?: ProcessDetail;
+    external?: ProcessDetail;
   };
-  assemblyDetails: ProcessDetail;
-  mandralsDetails: ProcessDetail;
-  crimpingDetails: ProcessDetail;
-  weldingDetails: ProcessDetail;
-  punchingTaggingDetails: ProcessDetail;
+  assemblyDetails?: ProcessDetail;
+  mandralsDetails?: ProcessDetail;
+  crimpingDetails?: ProcessDetail;
+  weldingDetails?: ProcessDetail;
+  punchingTaggingDetails?: ProcessDetail;
 }
 
 export interface Remarks {
-  text: string;
+  text?: string;
   weldingRodNumber?: string;
   weldingRodSize?: string;
-  piggingOptions: string[];
+  piggingOptions?: string[];
 }
 
 export interface Footer {

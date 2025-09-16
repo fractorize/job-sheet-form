@@ -175,7 +175,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
       <div className="space-y-6">
         <ProcessDetailForm
           title="Hose Cut Details"
-          data={data.hoseCutDetails}
+          data={data.hoseCutDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("hoseCutDetails", sectionData)
           }
@@ -189,7 +189,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
           <div className="space-y-4">
             <ProcessDetailForm
               title="Internal Skiving"
-              data={data.skivingDetails.internal}
+              data={data.skivingDetails?.internal || {}}
               onChange={(sectionData) =>
                 handleSkivingChange("internal", sectionData)
               }
@@ -197,7 +197,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
             />
             <ProcessDetailForm
               title="External Skiving"
-              data={data.skivingDetails.external}
+              data={data.skivingDetails?.external || {}}
               onChange={(sectionData) =>
                 handleSkivingChange("external", sectionData)
               }
@@ -208,7 +208,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Assembly Details"
-          data={data.assemblyDetails}
+          data={data.assemblyDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("assemblyDetails", sectionData)
           }
@@ -216,7 +216,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Mandrals Details"
-          data={data.mandralsDetails}
+          data={data.mandralsDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("mandralsDetails", sectionData)
           }
@@ -224,7 +224,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Crimping Details"
-          data={data.crimpingDetails}
+          data={data.crimpingDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("crimpingDetails", sectionData)
           }
@@ -233,7 +233,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Welding Details"
-          data={data.weldingDetails}
+          data={data.weldingDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("weldingDetails", sectionData)
           }
@@ -241,7 +241,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Punching / Tagging Details"
-          data={data.punchingTaggingDetails}
+          data={data.punchingTaggingDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("punchingTaggingDetails", sectionData)
           }

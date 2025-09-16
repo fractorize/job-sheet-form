@@ -1,34 +1,156 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFormStore } from "../store/useStore";
+import type { JobSheetFormData } from "../types";
+import OrderDetailsSection from "../components/sections/OrderDetailsSection";
+import JobDetailsSection from "../components/sections/JobDetailsSection";
+import InProcessDetailsSection from "../components/sections/InProcessDetailsSection";
+import RemarksSection from "../components/sections/RemarksSection";
+import FooterSection from "../components/sections/FooterSection";
+import {
+  FiEdit3,
+  FiArrowLeft,
+  FiCheck,
+  FiX,
+  FiRefreshCw,
+} from "react-icons/fi";
 
 const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { jobDetail, jobDetailLoading, jobDetailError, fetchJobById } =
-    useFormStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState<JobSheetFormData | null>(null);
+
+  const {
+    jobDetail,
+    jobDetailLoading,
+    jobDetailError,
+    fetchJobById,
+    updateJob,
+    errors,
+    successMessage,
+    expandedSections,
+    toggleSection,
+    isSubmitting,
+  } = useFormStore();
 
   useEffect(() => {
     if (id) fetchJobById(id);
   }, [id, fetchJobById]);
 
+  useEffect(() => {
+    if (jobDetail && isEditing) {
+      setEditData(jobDetail);
+    }
+  }, [jobDetail, isEditing]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditData(jobDetail || null);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditData(null);
+  };
+
+  const handleSave = async () => {
+    if (editData && id) {
+      await updateJob(id, editData);
+      setIsEditing(false);
+      setEditData(null);
+    }
+  };
+
+  const handleDataChange = (
+    section: keyof JobSheetFormData,
+    data: Partial<JobSheetFormData[keyof JobSheetFormData]>
+  ) => {
+    if (editData) {
+      setEditData({
+        ...editData,
+        [section]: {
+          ...editData[section],
+          ...data,
+        },
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen py-8">
+    <div
+      className="min-h-screen py-8"
+      style={{
+        backgroundImage: 'url("/bg.png")',
+        backgroundAttachment: "fixed",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
             <h1 className="text-2xl font-bold text-center">
-              Inspection Report Detail
+              {isEditing
+                ? "Edit Inspection Report"
+                : "Inspection Report Detail"}
             </h1>
-            <button
-              className="bg-white text-blue-600 px-3 py-1 rounded-md text-sm"
-              onClick={() => navigate(-1)}
-            >
-              Back
-            </button>
+            <div className="flex gap-3">
+              {!isEditing ? (
+                <>
+                  <button
+                    className="group flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    onClick={handleEdit}
+                  >
+                    <FiEdit3 className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+                    Edit
+                  </button>
+                  <button
+                    className="group flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-medium shadow-lg hover:shadow-xl hover:bg-blue-50 border border-blue-200 hover:border-blue-300 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    onClick={() => navigate(-1)}
+                  >
+                    <FiArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
+                    Back
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="group flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-700 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:shadow-lg"
+                    onClick={handleSave}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <FiCheck className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+                        Save
+                      </>
+                    )}
+                  </button>
+                  <button
+                    className="group flex items-center gap-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg hover:shadow-xl hover:from-gray-600 hover:to-gray-700 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    onClick={handleCancel}
+                  >
+                    <FiX className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="p-6">
+            {successMessage && (
+              <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md mb-6">
+                {successMessage}
+              </div>
+            )}
+
             {jobDetailLoading ? (
               <div className="text-center text-gray-500 py-8">Loading...</div>
             ) : jobDetailError ? (
@@ -39,6 +161,50 @@ const JobDetail: React.FC = () => {
               <div className="text-center text-gray-500 py-8">
                 No data found.
               </div>
+            ) : isEditing && editData ? (
+              <form className="space-y-6">
+                <OrderDetailsSection
+                  data={editData.orderDetails}
+                  errors={errors}
+                  isExpanded={expandedSections.has("orderDetails")}
+                  onToggle={() => toggleSection("orderDetails")}
+                  onChange={(data) => handleDataChange("orderDetails", data)}
+                />
+
+                <JobDetailsSection
+                  data={editData.jobDetails}
+                  errors={errors}
+                  isExpanded={expandedSections.has("jobDetails")}
+                  onToggle={() => toggleSection("jobDetails")}
+                  onChange={(data) => handleDataChange("jobDetails", data)}
+                />
+
+                <InProcessDetailsSection
+                  data={editData.inProcessDetails}
+                  errors={errors}
+                  isExpanded={expandedSections.has("inProcessDetails")}
+                  onToggle={() => toggleSection("inProcessDetails")}
+                  onChange={(data) =>
+                    handleDataChange("inProcessDetails", data)
+                  }
+                />
+
+                <RemarksSection
+                  data={editData.remarks}
+                  errors={errors}
+                  isExpanded={expandedSections.has("remarks")}
+                  onToggle={() => toggleSection("remarks")}
+                  onChange={(data) => handleDataChange("remarks", data)}
+                />
+
+                <FooterSection
+                  data={editData.footer}
+                  errors={errors}
+                  isExpanded={expandedSections.has("footer")}
+                  onToggle={() => toggleSection("footer")}
+                  onChange={(data) => handleDataChange("footer", data)}
+                />
+              </form>
             ) : (
               <div className="space-y-6">
                 <section>
@@ -88,8 +254,8 @@ const JobDetail: React.FC = () => {
                     </div>
                     <div>
                       <span className="font-medium">Length Cut:</span>{" "}
-                      {jobDetail.jobDetails.lengthCut.value}{" "}
-                      {jobDetail.jobDetails.lengthCut.unit}
+                      {jobDetail.jobDetails.lengthCut?.value}{" "}
+                      {jobDetail.jobDetails.lengthCut?.unit}
                     </div>
                     <div className="sm:col-span-2">
                       <span className="font-medium">MOC:</span>{" "}
@@ -97,19 +263,19 @@ const JobDetail: React.FC = () => {
                     </div>
                     <div>
                       <span className="font-medium">Fitting End A:</span>{" "}
-                      {jobDetail.jobDetails.fittingType.endA}
+                      {jobDetail.jobDetails.fittingType?.endA}
                     </div>
                     <div>
                       <span className="font-medium">Fitting End B:</span>{" "}
-                      {jobDetail.jobDetails.fittingType.endB}
+                      {jobDetail.jobDetails.fittingType?.endB}
                     </div>
                     <div>
                       <span className="font-medium">Hose Batch No:</span>{" "}
-                      {jobDetail.jobDetails.traceability.hoseBatchNumber}
+                      {jobDetail.jobDetails.traceability?.hoseBatchNumber}
                     </div>
                     <div>
                       <span className="font-medium">Flexiflo Batch No:</span>{" "}
-                      {jobDetail.jobDetails.traceability.flexifloBatchNo}
+                      {jobDetail.jobDetails.traceability?.flexifloBatchNo}
                     </div>
                   </div>
                 </section>
@@ -121,11 +287,11 @@ const JobDetail: React.FC = () => {
                   <div className="text-gray-700">
                     <div>
                       <span className="font-medium">Text:</span>{" "}
-                      {jobDetail.remarks.text}
+                      {jobDetail.remarks?.text}
                     </div>
                     <div>
                       <span className="font-medium">Pigging Options:</span>{" "}
-                      {jobDetail.remarks.piggingOptions?.join(", ")}
+                      {jobDetail.remarks?.piggingOptions?.join(", ")}
                     </div>
                   </div>
                 </section>

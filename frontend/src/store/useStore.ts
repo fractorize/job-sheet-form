@@ -46,6 +46,7 @@ type FormStore = {
   jobDetailLoading: boolean;
   jobDetailError: string;
   fetchJobById: (id: string) => Promise<void>;
+  updateJob: (id: string, data: JobSheetFormData) => Promise<void>;
 };
 
 const initialFormData: JobSheetFormData = {
@@ -74,72 +75,8 @@ const initialFormData: JobSheetFormData = {
       flexifloBatchNo: "",
     },
   },
-  inProcessDetails: {
-    hoseCutDetails: {
-      date: "",
-      operatorSign: "",
-      machineNumber: "",
-      measurements: {
-        value: 0,
-        unit: "mm",
-      },
-    },
-    skivingDetails: {
-      internal: {
-        date: "",
-        operatorSign: "",
-        machineNumber: "",
-        measurements: {
-          value: 0,
-          unit: "mm",
-        },
-      },
-      external: {
-        date: "",
-        operatorSign: "",
-        machineNumber: "",
-        measurements: {
-          value: 0,
-          unit: "mm",
-        },
-      },
-    },
-    assemblyDetails: {
-      date: "",
-      operatorSign: "",
-      machineNumber: "",
-    },
-    mandralsDetails: {
-      date: "",
-      operatorSign: "",
-      machineNumber: "",
-    },
-    crimpingDetails: {
-      date: "",
-      operatorSign: "",
-      machineNumber: "",
-      measurements: {
-        value: 0,
-        unit: "mm",
-      },
-    },
-    weldingDetails: {
-      date: "",
-      operatorSign: "",
-      machineNumber: "",
-    },
-    punchingTaggingDetails: {
-      date: "",
-      operatorSign: "",
-      machineNumber: "",
-    },
-  },
-  remarks: {
-    text: "",
-    weldingRodNumber: "",
-    weldingRodSize: "",
-    piggingOptions: [],
-  },
+  inProcessDetails: {},
+  remarks: {},
   footer: {
     supervisorSignature: "",
     date: "",
@@ -188,12 +125,15 @@ export const useFormStore = create<FormStore>((set, get) => ({
   jobDetailLoading: false,
   jobDetailError: "",
 
-  updateFormData: (section, data) => {
+  updateFormData: <K extends keyof JobSheetFormData>(
+    section: K,
+    data: Partial<JobSheetFormData[K]>
+  ) => {
     set((state) => {
       const updatedSection = {
         ...(state.formData[section] as object),
         ...(data as object),
-      } as JobSheetFormData[typeof section];
+      } as JobSheetFormData[K];
       return {
         formData: {
           ...state.formData,
@@ -203,7 +143,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
     });
   },
 
-  toggleSection: (sectionId) => {
+  toggleSection: (sectionId: string) => {
     set((state) => {
       const newExpanded = new Set(state.expandedSections);
       if (newExpanded.has(sectionId)) newExpanded.delete(sectionId);
@@ -212,15 +152,15 @@ export const useFormStore = create<FormStore>((set, get) => ({
     });
   },
 
-  setErrors: (errors) => set({ errors }),
-  setSuccessMessage: (message) => set({ successMessage: message }),
+  setErrors: (errors: FormErrors) => set({ errors }),
+  setSuccessMessage: (message: string) => set({ successMessage: message }),
 
   resetForm: () =>
     set({ formData: initialFormData, errors: {}, successMessage: "" }),
 
-  validateWithZod: (data) => {
+  validateWithZod: (data: JobSheetFormData) => {
     try {
-      JobSchema.parse(data);
+      jobSchema.parse(data);
       return { ok: true } as const;
     } catch (err) {
       const newErrors: FormErrors = {};
@@ -245,7 +185,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
 
     try {
       set({ isSubmitting: true });
-      const response = await axios.post("/api/inspection-report", formData);
+      const response = await axios.post("/api/job", formData);
       if (response.data?.success) {
         set({
           formData: initialFormData,
@@ -284,7 +224,7 @@ export const useFormStore = create<FormStore>((set, get) => ({
   fetchJobs: async () => {
     try {
       set({ jobsLoading: true, jobsError: "" });
-      const response = await axios.get("/api/inspection-report");
+      const response = await axios.get("/api/job");
       const data = Array.isArray(response.data)
         ? response.data
         : response.data?.data ?? [];
@@ -303,9 +243,17 @@ export const useFormStore = create<FormStore>((set, get) => ({
   fetchJobById: async (id: string) => {
     try {
       set({ jobDetailLoading: true, jobDetailError: "" });
-      const response = await axios.get(`/api/inspection-report/${id}`);
+      const response = await axios.get(`/api/job/${id}`);
       const data = response.data?.data ?? response.data;
-      set({ jobDetail: data });
+
+      // Ensure optional fields are properly initialized
+      const normalizedData = {
+        ...data,
+        inProcessDetails: data.inProcessDetails || {},
+        remarks: data.remarks || {},
+      };
+
+      set({ jobDetail: normalizedData });
     } catch (error: unknown) {
       const err = error as AxiosError<{ message?: string }>;
       set({
@@ -314,6 +262,61 @@ export const useFormStore = create<FormStore>((set, get) => ({
       });
     } finally {
       set({ jobDetailLoading: false });
+    }
+  },
+
+  // Implement job update
+  updateJob: async (id: string, data: JobSheetFormData) => {
+    const { validateWithZod } = get();
+    set({ successMessage: "", errors: {} });
+
+    // Clean up the data before validation and sending
+    const cleanedData = {
+      ...data,
+      inProcessDetails: data.inProcessDetails || {},
+      remarks: data.remarks || {},
+    };
+
+    const validation = validateWithZod(cleanedData);
+    if (validation.ok === false) {
+      set({ errors: validation.errors });
+      return;
+    }
+
+    try {
+      set({ isSubmitting: true });
+      const response = await axios.put(`/api/job/${id}`, cleanedData);
+      if (response.data?.success) {
+        set({
+          successMessage: "Report updated successfully.",
+          jobDetail: response.data.data,
+        });
+      }
+    } catch (error: unknown) {
+      const err = error as AxiosError<ApiErrorResponse>;
+      if (
+        err?.response?.status === 400 &&
+        Array.isArray(err.response.data?.errors)
+      ) {
+        const backendErrors = err.response.data.errors as Array<{
+          field: string;
+          message: string;
+        }>;
+        const newErrors: FormErrors = {};
+        backendErrors.forEach((e) => {
+          const key = mapPathToFlatKey(e.field.split("."));
+          if (!newErrors[key]) newErrors[key] = e.message;
+        });
+        set({ errors: newErrors });
+      } else if (err?.response?.data?.message) {
+        set({ successMessage: "" });
+        alert(err.response.data.message);
+      } else {
+        set({ successMessage: "" });
+        alert("Failed to update report. Please try again.");
+      }
+    } finally {
+      set({ isSubmitting: false });
     }
   },
 }));
