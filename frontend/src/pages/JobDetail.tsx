@@ -7,13 +7,9 @@ import JobDetailsSection from "../components/sections/JobDetailsSection";
 import InProcessDetailsSection from "../components/sections/InProcessDetailsSection";
 import RemarksSection from "../components/sections/RemarksSection";
 import FooterSection from "../components/sections/FooterSection";
-import {
-  FiEdit3,
-  FiArrowLeft,
-  FiCheck,
-  FiX,
-  FiRefreshCw,
-} from "react-icons/fi";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+
+import { FiEdit3, FiCheck, FiX, FiRefreshCw } from "react-icons/fi";
 
 const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +28,7 @@ const JobDetail: React.FC = () => {
     expandedSections,
     toggleSection,
     isSubmitting,
+    deleteJob,
   } = useFormStore();
 
   useEffect(() => {
@@ -76,6 +73,12 @@ const JobDetail: React.FC = () => {
       });
     }
   };
+  const handleDelete = async () => {
+    if (id) {
+      await deleteJob(id);
+      navigate("/");
+    }
+  };
 
   return (
     <div
@@ -89,7 +92,10 @@ const JobDetail: React.FC = () => {
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
+          <div
+            onClick={() => navigate("/")}
+            className="bg-blue-600 cursor-pointer text-white px-6 py-4 flex items-center justify-between"
+          >
             <h1 className="text-2xl font-bold text-center">
               {isEditing
                 ? "Edit Inspection Report"
@@ -106,11 +112,11 @@ const JobDetail: React.FC = () => {
                     Edit
                   </button>
                   <button
-                    className="group flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-medium shadow-lg hover:shadow-xl hover:bg-blue-50 border border-blue-200 hover:border-blue-300 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    onClick={() => navigate(-1)}
+                    onClick={handleDelete}
+                    className="group flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-700 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   >
-                    <FiArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
-                    Back
+                    <RiDeleteBin6Fill className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
+                    Delete
                   </button>
                 </>
               ) : (
@@ -180,7 +186,7 @@ const JobDetail: React.FC = () => {
                 />
 
                 <InProcessDetailsSection
-                  data={editData.inProcessDetails}
+                  data={editData.inProcessDetails || {}}
                   errors={errors}
                   isExpanded={expandedSections.has("inProcessDetails")}
                   onToggle={() => toggleSection("inProcessDetails")}
@@ -190,7 +196,7 @@ const JobDetail: React.FC = () => {
                 />
 
                 <RemarksSection
-                  data={editData.remarks}
+                  data={editData.remarks || {}}
                   errors={errors}
                   isExpanded={expandedSections.has("remarks")}
                   onToggle={() => toggleSection("remarks")}

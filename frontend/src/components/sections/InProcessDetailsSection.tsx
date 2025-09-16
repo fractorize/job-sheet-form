@@ -1,5 +1,5 @@
 import React from "react";
-import type { InProcessDetails, FormErrors, ProcessDetail } from "../types";
+import type { InProcessDetails, FormErrors, ProcessDetail } from "../../types";
 import CollapsibleSection from "../common/CollapsibleSection";
 
 interface InProcessDetailsSectionProps {
@@ -147,6 +147,9 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
   onToggle,
   onChange,
 }) => {
+  // Ensure data is always defined
+  const safeData = data || {};
+
   const handleSectionChange = (
     section: keyof InProcessDetails,
     sectionData: unknown
@@ -160,7 +163,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
   ) => {
     onChange({
       skivingDetails: {
-        ...data.skivingDetails,
+        ...safeData.skivingDetails,
         [type]: sectionData,
       },
     });
@@ -175,7 +178,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
       <div className="space-y-6">
         <ProcessDetailForm
           title="Hose Cut Details"
-          data={data.hoseCutDetails || {}}
+          data={safeData.hoseCutDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("hoseCutDetails", sectionData)
           }
@@ -189,7 +192,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
           <div className="space-y-4">
             <ProcessDetailForm
               title="Internal Skiving"
-              data={data.skivingDetails?.internal || {}}
+              data={safeData.skivingDetails?.internal || {}}
               onChange={(sectionData) =>
                 handleSkivingChange("internal", sectionData)
               }
@@ -197,7 +200,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
             />
             <ProcessDetailForm
               title="External Skiving"
-              data={data.skivingDetails?.external || {}}
+              data={safeData.skivingDetails?.external || {}}
               onChange={(sectionData) =>
                 handleSkivingChange("external", sectionData)
               }
@@ -208,7 +211,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Assembly Details"
-          data={data.assemblyDetails || {}}
+          data={safeData.assemblyDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("assemblyDetails", sectionData)
           }
@@ -216,7 +219,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Mandrals Details"
-          data={data.mandralsDetails || {}}
+          data={safeData.mandralsDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("mandralsDetails", sectionData)
           }
@@ -224,7 +227,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Crimping Details"
-          data={data.crimpingDetails || {}}
+          data={safeData.crimpingDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("crimpingDetails", sectionData)
           }
@@ -233,7 +236,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Welding Details"
-          data={data.weldingDetails || {}}
+          data={safeData.weldingDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("weldingDetails", sectionData)
           }
@@ -241,7 +244,7 @@ const InProcessDetailsSection: React.FC<InProcessDetailsSectionProps> = ({
 
         <ProcessDetailForm
           title="Punching / Tagging Details"
-          data={data.punchingTaggingDetails || {}}
+          data={safeData.punchingTaggingDetails || {}}
           onChange={(sectionData) =>
             handleSectionChange("punchingTaggingDetails", sectionData)
           }

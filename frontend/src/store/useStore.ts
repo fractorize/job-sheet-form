@@ -47,6 +47,7 @@ type FormStore = {
   jobDetailError: string;
   fetchJobById: (id: string) => Promise<void>;
   updateJob: (id: string, data: JobSheetFormData) => Promise<void>;
+  deleteJob: (id: string) => Promise<void>;
 };
 
 const initialFormData: JobSheetFormData = {
@@ -314,6 +315,29 @@ export const useFormStore = create<FormStore>((set, get) => ({
       } else {
         set({ successMessage: "" });
         alert("Failed to update report. Please try again.");
+      }
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  deleteJob: async (id: string) => {
+    try {
+      set({ isSubmitting: true, successMessage: "", errors: {} });
+      const response = await axios.delete(`/api/job/${id}`);
+      if (response.data?.success) {
+        set((state) => ({
+          successMessage: "Report deleted successfully.",
+          jobs: state.jobs.filter((job) => job._id !== id),
+          jobDetail: undefined,
+        }));
+      }
+    } catch (error: unknown) {
+      const err = error as AxiosError<ApiErrorResponse>;
+      if (err?.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("Failed to delete report. Please try again.");
       }
     } finally {
       set({ isSubmitting: false });

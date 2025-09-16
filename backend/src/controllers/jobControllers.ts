@@ -131,20 +131,27 @@ export const updateJob = async (req: Request, res: Response) => {
       });
     }
 
-    if ((error as any).name === "ValidationError") {
-      return res.status(400).json({
-        success: false,
-        message: "Validation Error",
-        errors: (error as any).errors,
-      });
-    }
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
 
-    if ((error as any).code === 11000) {
-      return res.status(409).json({
-        success: false,
-        message: "Duplicate entry found",
-      });
+export const deleteJob = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedJob = await Job.findByIdAndDelete(id);
+    if (!deletedJob) {
+      return res.status(404).json({ success: false, message: "Job not found" });
     }
+    return res.status(200).json({
+      success: true,
+      message: "Job successfully deleted.",
+      data: deletedJob,
+    });
+  } catch (error) {
+    console.error("Error in update Job:", (error as Error).message);
 
     res.status(500).json({
       success: false,

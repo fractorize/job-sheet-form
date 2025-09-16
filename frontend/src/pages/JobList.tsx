@@ -15,9 +15,7 @@ const JobList: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="bg-blue-600 text-white px-6 py-4">
-            <h1 className="text-2xl font-bold text-center">
-              Inspection Report List
-            </h1>
+            <h1 className="text-2xl font-bold">Inspection Report List</h1>
           </div>
 
           <div className="p-6">
